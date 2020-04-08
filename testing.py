@@ -1,5 +1,5 @@
 '''
-Fix sorting, import data, export data, comments
+import data, export data, comments
 '''
 '''
 shifts:
@@ -48,7 +48,7 @@ def a_time_slot_check(open_time, close_time, test):
             if time[0] == 2400:
                 time[0] = 1200
                 time[1]+=1
-    return(str(time[0])+str(time[1]))
+    return(str(time[1])+str(time[0]))
 
 def b_time_slot_check(open_time, close_time):
     while time_b[0]<open_time or time_b[0]>close_time or str(time_b[0])+str(time_b[1]) in testing_times_b_unsorted:
@@ -58,7 +58,7 @@ def b_time_slot_check(open_time, close_time):
             if time_b[0] == 2400:
                 time_b[0] = 1200
                 time_b[1]+=1
-    return(str(time_b[0])+str(time_b[1]))
+    return(str(time_b[1])+str(time_b[0]))
 
 def c_time_slot_check(open_time,close_time,test):
     if test == 'A1':
@@ -68,22 +68,23 @@ def c_time_slot_check(open_time,close_time,test):
         temp_time_a = time_a_2.copy()
         testing_times = testing_times_a_2.copy()
     temp_time_b = time_b.copy()
-    while temp_time_a[0]<open_time or temp_time_a[0]>close_time or str(temp_time_a[0])+str(temp_time_a[1]) in testing_times:
+    while temp_time_a[0]<open_time or temp_time_a[0]>close_time or str(temp_time_a[1])+str(temp_time_a[0]) in testing_times:
         temp_time_a[0]+=15
         if int(str(list(str(temp_time_a[0]))[2])+str(list(str(temp_time_a[0]))[3])) == 60:
             temp_time_a[0]+=40
             if temp_time_a[0] == 2400:
                 temp_time_a[0] = 1200
                 temp_time_a[1]+=1
-    while temp_time_b[0]<open_time or temp_time_b[0]>close_time or str(temp_time_b[0])+str(temp_time_b[1]) in testing_times_b_unsorted or (temp_time_b[0] >= temp_time_a[0] and temp_time_b[0]<=temp_time_a[0]+15) or (temp_time_b[0]+20>=temp_time_a[0] and temp_time_b[0]+20<=temp_time_a[0]+15):
+    while temp_time_b[0]<open_time or temp_time_b[0]>close_time or str(temp_time_b[1])+str(temp_time_b[0]) in testing_times_b_unsorted or (int(str(temp_time_b[1])+str(temp_time_b[0]))>=int(str(temp_time_a[1])+str(temp_time_a[0])) and int(str(temp_time_b[1])+str(temp_time_b[0]))<=temp_time_a[0]+15) or (int(str(temp_time_b[1])+str(temp_time_b[0]+20))>=int(str(temp_time_a[1])+str(temp_time_a[0])) and int(str(temp_time_b[1])+str(temp_time_b[0]+20))<=int(str(temp_time_a[1])+str(temp_time_a[0]+15))):
+        print(temp_time_b)
         temp_time_b[0]+=20
         if int(str(list(str(temp_time_b[0]))[2])+str(list(str(temp_time_b[0]))[3])) == 60:
             temp_time_b[0]+=40
             if temp_time_b[0] == 2400:
                 temp_time_b[0] = 1200
                 temp_time_b[1]+=1
-    test_time_a = str(temp_time_a[0])+str(temp_time_a[1])
-    test_time_b = str(temp_time_b[0])+str(temp_time_b[1])
+    test_time_a = str(temp_time_a[1])+str(temp_time_a[0])
+    test_time_b = str(temp_time_b[1])+str(temp_time_b[0])
     return([test_time_a,test_time_b])
 def test_assign(employee, duration, test, shift):
     global x
@@ -136,15 +137,15 @@ for employee in employees_testing:
 for x in testing_times_a_1:
     for y in testing_times_a_2:
         if x == y:
-            hour = str(list(x)[0])+str(list(x)[1])
-            minute = str(list(x)[2])+str(list(x)[3])
-            day = str(list(x)[4])
+            hour = str(list(x)[1])+str(list(x)[2])
+            minute = str(list(x)[3])+str(list(x)[4])
+            day = str(list(x)[0])
             organised_time = f"{hour}:{minute} Day {day}"
             testing_times_a[organised_time] = [testing_times_a_1[x][0],testing_times_a_2[x][0]]
 for x in sorted(testing_times_b_unsorted):
-    hour = str(list(x)[0])+str(list(x)[1])
-    minute = str(list(x)[2])+str(list(x)[3])
-    day = str(list(x)[4])
+    hour = str(list(x)[1])+str(list(x)[2])
+    minute = str(list(x)[3])+str(list(x)[4])
+    day = str(list(x)[0])
     organised_time = f"{hour}:{minute} Day {day}"
     testing_times_b[organised_time] = testing_times_b_unsorted[x][0]
 print(testing_times_a)
