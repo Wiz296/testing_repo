@@ -1,5 +1,15 @@
 '''
-add breaks, comments, find best time slot for nurses to work
+When using, make sure to change data to file location of the data
+and employees_df.to_excel to contain the export location
+
+import data (done)
+assing testing (done)
+sort data (done)
+export data - find a way to export to same file but on a different sheet. for now it
+exports to a different file
+user input - get the user to choose which files to use
+gui - finish changing into a class, should be done soon
+comments - after gui is done
 '''
 '''
 shifts(tests are 1200-2400):
@@ -212,4 +222,5 @@ employees = {
 
 employees_df = pd.DataFrame.from_dict(employees)
 employees_df.sort_values(by=['Test A'],inplace=True)
+export = 
 employees_df.to_excel(r"C:\Users\Alan\Downloads\Test_Spreadsheet.xlsx")
