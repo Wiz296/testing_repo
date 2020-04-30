@@ -1,7 +1,6 @@
 '''
 When using, make sure to change data to file location of the data
 and employees_df.to_excel to contain the export location
-
 import data (done)
 assing testing (done)
 sort data (done)
@@ -19,9 +18,12 @@ shifts(tests are 1200-2400):
 4. 6am-6pm
 5. 6pm-6am
 '''
+import tkinter
 import pandas as pd
 from collections import OrderedDict
-data = pd.read_excel(r'C:\Users\Alan\Downloads\medical_update_3.12.20_PHS.xls')
+from tkinter import filedialog
+from functools import partial
+
 employees = {}
 eid = []
 lname = []
@@ -185,42 +187,65 @@ def date_maker(time):
         hour = int(float(''.join(list(time)[1:])))
     date = f"Day {day} {hour}"
     return date
-for index,column in data.iterrows():
-    if index == 0:
-        continue
-    if type(column[0])!= type(""):
-        continue
-    if column[4] == 'yes':
-        test[0] = 1
-    else:
-        test[0] = 0
-    if column[5] == 'yes':
-        test[1] = 1
-    else:
-        test[1] = 0
-    if column[6] == 'yes':
-        test[2] = 1
-    else:
-        test[2] = 0
-    tests = test_assign(test,column[3])
-    eid.append(column[0])
-    lname.append(column[1])
-    fname.append(column[2])
-    dep.append(column[8])
-    test_a.append(tests[0])
-    test_v.append(tests[1])
-    test_rft.append(tests[2])
-employees = {
-    'EID': eid,
-    'Last Name':lname,
-    'First Name':fname,
-    'Department':dep,
-    'Test A':test_a,
-    'Test V':test_v,
-    'Test RFT':test_rft
-}
+def time_assign(import_file, export_file):
+    data = pd.read_excel(import_file)
+    for index,column in data.iterrows():
+        if index == 0:
+            continue
+        if type(column[0])!= type(""):
+            continue
+        if column[4] == 'yes':
+            test[0] = 1
+        else:
+            test[0] = 0
+        if column[5] == 'yes':
+            test[1] = 1
+        else:
+            test[1] = 0
+        if column[6] == 'yes':
+            test[2] = 1
+        else:
+            test[2] = 0
+        tests = test_assign(test,column[3])
+        eid.append(column[0])
+        lname.append(column[1])
+        fname.append(column[2])
+        dep.append(column[8])
+        test_a.append(tests[0])
+        test_v.append(tests[1])
+        test_rft.append(tests[2])
+    employees = {
+        'EID': eid,
+        'Last Name':lname,
+        'First Name':fname,
+        'Department':dep,
+        'Test A':test_a,
+        'Test V':test_v,
+        'Test RFT':test_rft
+    }
 
-employees_df = pd.DataFrame.from_dict(employees)
-employees_df.sort_values(by=['Test A'],inplace=True)
-export = 
-employees_df.to_excel(r"C:\Users\Alan\Downloads\Test_Spreadsheet.xlsx")
+    employees_df = pd.DataFrame.from_dict(employees)
+    employees_df.sort_values(by=['Test A'],inplace=True)
+    employees_df.to_excel(export_file)
+files = {'import':'N/A','export':'N/A'}
+root = tkinter.Tk()
+root.title("Employee Test Assigning")
+def file_selection(file_type):
+    root.filename = tkinter.filedialog.askopenfilename()
+    if file_type == 'import':
+        files['import'] = root.filename
+        import_file = tkinter.Label(root, text=f'Import: {root.filename}')
+        import_file.grid(row=0,column=0)
+    else:
+        files['export'] = root.filename
+        export_file = tkinter.Label(root, text=f'Export: {root.filename}')
+        export_file.grid(row=1,column=0)
+    if (files['import'] and files['export']) != 'N/A':
+        time_button = tkinter.Button(root, text="Assign Times", command=partial(time_assign,files['import'],files['export']))
+        time_button.grid(row=2,column=1)
+        
+import_button = tkinter.Button(root, text="Select Import File", command=partial(file_selection,'import'))
+export_button = tkinter.Button(root, text="Select Export File", command=partial(file_selection,'export'))
+import_button.grid(row=0,column=1)
+export_button.grid(row=1,column=1)
+root.mainloop()
